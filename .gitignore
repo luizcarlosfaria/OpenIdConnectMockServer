@@ -10,6 +10,6 @@ obj
 .docker
 
 # UI
-Quickstart
-Views
-wwwroot
+#Quickstart
+#Views
+#wwwroot
