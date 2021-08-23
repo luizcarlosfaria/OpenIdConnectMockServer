@@ -20,7 +20,13 @@
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ACCOUNT_OPTIONS_PATH": "./config/_account-options.json",
+                "SERVER_OPTIONS_PATH": "./config/_server-options.json",
+
+                "USERS_CONFIGURATION_PATH": "./config/users.json",
+                "API_RESOURCES_PATH": "./config/resources.json",
+                "CLIENTS_CONFIGURATION_PATH": "./config/clients.json"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

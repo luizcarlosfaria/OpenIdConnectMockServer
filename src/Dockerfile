@@ -2,12 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1 as source
 ARG target="Release"
 
-RUN apt-get update && apt-get install unzip
-
 WORKDIR /src
-
-COPY ./getmain.sh ./getmain.sh
-RUN ./getmain.sh
 
 COPY ./OpenIdConnectServerMock.csproj ./OpenIdConnectServerMock.csproj
 RUN dotnet restore
@@ -25,9 +20,15 @@ ARG target="Release"
 RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; fi
 
 COPY --from=source /OpenIdConnectServerMock /OpenIdConnectServerMock
+COPY --from=source /src/config /OpenIdConnectServerMock/config
 WORKDIR /OpenIdConnectServerMock
 
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ACCOUNT_OPTIONS_PATH=./config/_account-options.json
+ENV SERVER_OPTIONS_PATH=./config/_server-options.json
+ENV USERS_CONFIGURATION_PATH=./config/users.json
+ENV API_RESOURCES_PATH=./config/resources.json
+ENV CLIENTS_CONFIGURATION_PATH=./config/clients.json
 
 EXPOSE 80
 
