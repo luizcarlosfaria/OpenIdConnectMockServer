@@ -21,6 +21,7 @@ RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm
 
 COPY --from=source /OpenIdConnectServerMock /OpenIdConnectServerMock
 COPY --from=source /src/config /OpenIdConnectServerMock/config
+COPY --from=source /src/keys /OpenIdConnectServerMock/keys
 WORKDIR /OpenIdConnectServerMock
 
 ENV ASPNETCORE_ENVIRONMENT=Development

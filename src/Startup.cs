@@ -8,6 +8,8 @@ using OpenIdConnectServer.JsonConverters;
 using Newtonsoft.Json.Serialization;
 using OpenIdConnectServer.Middlewares;
 using IdentityServer4.Hosting;
+using System.IO;
+using System;
 
 namespace OpenIdConnectServer
 {
@@ -27,6 +29,7 @@ namespace OpenIdConnectServer
                         var configuredOptions = Config.GetServerOptions();
                         MergeHelper.Merge(configuredOptions, options);
                     })
+                    //.AddDeveloperSigningCredential(filename: Path.Combine(Environment.CurrentDirectory,  "keys", "tempkey.rsa"))
                     .AddDeveloperSigningCredential()
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryApiResources(Config.GetApiResources())
