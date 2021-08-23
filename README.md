@@ -256,3 +256,33 @@ There are two ways to use `oidc-server-mock` with this change.
 1. [Tweek](https://github.com/Soluto/tweek) blackbox [tests](https://github.com/Soluto/tweek-blackbox).
 
 2. [Stitch](https://github.com/Soluto/Stitch) e2e tests.
+
+# About this fork
+
+This fork configure default parameters. Is awesome to get started with minimal footprint.
+
+## Default configuration
+
+```dockerfile
+ENV ACCOUNT_OPTIONS_PATH        =./config/_account-options.json
+ENV SERVER_OPTIONS_PATH         =./config/_server-options.json
+ENV USERS_CONFIGURATION_PATH    =./config/users.json
+ENV API_RESOURCES_PATH          =./config/resources.json
+ENV CLIENTS_CONFIGURATION_PATH  =./config/clients.json
+```
+
+On this image, config path is ```/OpenIdConnectServerMock/config/```
+
+## Volume for Keys
+RSA keys is generated inside ```/OpenIdConnectServerMock/keys/```
+
+## UI Customization
+
+### Autologin
+On login page, all users are listed and you can login clicking in the respective card without use Username and Password. 
+
+This approach reduce timing finding credentials , it's a huge help on live stream sessions and demonstrations.
+
+### Disable validation on /diagnostics
+
+By default access to /diagnostics is only accepted if you are on 127.0.0.1, anybody else is blocked to access this route, including us when using docker.
