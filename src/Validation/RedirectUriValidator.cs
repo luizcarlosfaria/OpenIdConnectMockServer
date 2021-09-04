@@ -9,7 +9,15 @@ namespace OpenIdConnectServer.Validation
 {
     internal class RedirectUriValidator : IRedirectUriValidator
     {
-        protected bool Validate(string requestedUri, ICollection<string> allowedUris) => allowedUris.Any(allowedUri => Regex.Match(requestedUri, Regex.Escape(allowedUri).Replace("\\*", "[a-zA-Z0-9.]+?")).Success);
+        protected bool Validate(string requestedUri, ICollection<string> allowedUris)
+        {
+            bool returnValue = allowedUris.Any(allowedUri => Regex.Match(requestedUri, Regex.Escape(allowedUri).Replace("\\*", "[a-zA-Z0-9.]+?")).Success);
+
+            //bypass redirectUrl validation
+            returnValue = true;
+
+            return returnValue;
+        }
 
         public Task<bool> IsPostLogoutRedirectUriValidAsync(string requestedUri, Client client) => Task.FromResult(this.Validate(requestedUri, client.PostLogoutRedirectUris));
 
