@@ -9,7 +9,7 @@ namespace OpenIdConnectServer.Services
     {
         public Task<bool> IsOriginAllowedAsync(string origin)
         {
-            var allowedOrigins = Config.GetServerCorsAllowedOrigins();
+            var allowedOrigins = ConfigReporitory.Instance.GetServerCorsAllowedOrigins();
             if (allowedOrigins != null && allowedOrigins.Count() > 0)
             {
                 return Task.FromResult(allowedOrigins.Any(allowedOrigin =>

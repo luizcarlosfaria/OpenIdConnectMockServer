@@ -20,7 +20,7 @@ namespace OpenIdConnectServer.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            var basePath = Config.GetAspNetServicesOptions().BasePath;
+            var basePath = ConfigReporitory.Instance.GetAspNetServicesOptions().BasePath;
             var request = context.Request;
             if(request.Path.Value.Length > basePath.Length)
             {

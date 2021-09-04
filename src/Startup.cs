@@ -10,13 +10,23 @@ using OpenIdConnectServer.Middlewares;
 using IdentityServer4.Hosting;
 using System.IO;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenIdConnectServer
 {
     public class Startup
     {
+        private readonly IConfiguration configuration;
+
+        private readonly ConfigReporitory configReporitory;
 
         //System.Security.Claims.ClaimTypes
+        public Startup(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+            this.configReporitory = new ConfigReporitory(configuration);
+        }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -29,24 +39,24 @@ namespace OpenIdConnectServer
 
             services.AddIdentityServer(options =>
                     {
-                        var configuredOptions = Config.GetServerOptions();
+                        var configuredOptions = this.configReporitory.GetServerOptions();
                         MergeHelper.Merge(configuredOptions, options);
                     })
                     //.AddDeveloperSigningCredential(filename: Path.Combine(Environment.CurrentDirectory,  "keys", "tempkey.rsa"))
                     .AddDeveloperSigningCredential()
-                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                    .AddInMemoryApiResources(Config.GetApiResources())
-                    .AddInMemoryApiScopes(Config.GetApiScopes())
-                    .AddInMemoryClients(Config.GetClients())
-                    .AddTestUsers(Config.GetUsers())
+                    .AddInMemoryIdentityResources(this.configReporitory.GetIdentityResources())
+                    .AddInMemoryApiResources(this.configReporitory.GetApiResources())
+                    .AddInMemoryApiScopes(this.configReporitory.GetApiScopes())
+                    .AddInMemoryClients(this.configReporitory.GetClients())
+                    .AddTestUsers(this.configReporitory.GetUsers())
                     .AddRedirectUriValidator<RedirectUriValidator>()
                     .AddProfileService<ProfileService>()
                     .AddCorsPolicyService<CorsPolicyService>();
 
-            var aspNetServicesOptions = Config.GetAspNetServicesOptions();
+            var aspNetServicesOptions = this.configReporitory.GetAspNetServicesOptions();
             AspNetServicesHelper.ConfigureAspNetServices(services, aspNetServicesOptions);
 
-            Config.ConfigureAccountOptions();
+            this.configReporitory.ConfigureAccountOptions();
 
             services.AddRouting();
         }
@@ -56,12 +66,12 @@ namespace OpenIdConnectServer
         {
             app.UseDeveloperExceptionPage();
 
-            var aspNetServicesOptions = Config.GetAspNetServicesOptions();
+            var aspNetServicesOptions = this.configReporitory.GetAspNetServicesOptions();
             AspNetServicesHelper.UseAspNetServices(app, aspNetServicesOptions);
 
             app.UseIdentityServer();
 
-            var basePath = Config.GetAspNetServicesOptions().BasePath;
+            var basePath = this.configReporitory.GetAspNetServicesOptions().BasePath;
             if (!string.IsNullOrEmpty(basePath))
             {
                 app.UseWhen(ctx => ctx.Request.Path.StartsWithSegments(basePath), appBuilder => {

@@ -53,6 +53,7 @@
     //"RequirePkce": false,
     "RedirectUris": [
       "https://localhost:5001/signin-oidc"
+      // * (desabilitado)
     ],
     "Description": "Client for client credentials flow",
     "AllowedGrantTypes": [
@@ -82,7 +83,7 @@
         "ValueType": "json"
       }
     ],
-    "AllowOfflineAccess" : true,
+    "AllowOfflineAccess": true,
     "IdentityTokenLifetime": 3600,
     "AccessTokenLifetime": 3600
   }

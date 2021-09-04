@@ -48,7 +48,7 @@
                 </div>
 
 
-            @foreach (var currentUser in OpenIdConnectServer.Config.GetUsers())
+            @foreach (var currentUser in OpenIdConnectServer.ConfigReporitory.Instance.GetUsers())
             {
                 
             <div class="card text-white bg-primary mb-3">

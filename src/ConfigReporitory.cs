@@ -8,15 +8,24 @@ using IdentityServer4.Test;
 using Newtonsoft.Json;
 using OpenIdConnectServer.JsonConverters;
 using OpenIdConnectServer.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenIdConnectServer
 {
-  public static class Config
+  public class ConfigReporitory
     {
-        //GrantType
+        public static ConfigReporitory Instance { get; private set; }
+
+        private readonly IConfiguration configuration;
+
+        public ConfigReporitory(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+            Instance = this;
+        }
         
 
-        public static AspNetServicesOptions GetAspNetServicesOptions() {
+        public AspNetServicesOptions GetAspNetServicesOptions() {
             string aspNetServicesOptionsStr = Environment.GetEnvironmentVariable("ASPNET_SERVICES_OPTIONS_INLINE");
             if (string.IsNullOrWhiteSpace(aspNetServicesOptionsStr))
             {
@@ -31,7 +40,7 @@ namespace OpenIdConnectServer
             return aspNetServicesOptions;
         }
 
-        public static IdentityServerOptions GetServerOptions()
+        public IdentityServerOptions GetServerOptions()
         {
             string serverOptionsStr = Environment.GetEnvironmentVariable("SERVER_OPTIONS_INLINE");
             if (string.IsNullOrWhiteSpace(serverOptionsStr))
@@ -47,7 +56,7 @@ namespace OpenIdConnectServer
             return serverOptions;
         }
 
-        public static void ConfigureAccountOptions()
+        public void ConfigureAccountOptions()
         {
             string accountOptionsStr = Environment.GetEnvironmentVariable("ACCOUNT_OPTIONS_INLINE");
             if (string.IsNullOrWhiteSpace(accountOptionsStr))
@@ -62,7 +71,7 @@ namespace OpenIdConnectServer
             AccountOptionsHelper.ConfigureAccountOptions(accountOptionsStr);
         }
 
-        public static IEnumerable<string> GetServerCorsAllowedOrigins()
+        public IEnumerable<string> GetServerCorsAllowedOrigins()
         {
             string allowedOriginsStr = Environment.GetEnvironmentVariable("SERVER_CORS_ALLOWED_ORIGINS_INLINE");
             if (string.IsNullOrWhiteSpace(allowedOriginsStr))
@@ -78,7 +87,7 @@ namespace OpenIdConnectServer
             return allowedOrigins;
         }
 
-        public static IEnumerable<ApiScope> GetApiScopes()
+        public IEnumerable<ApiScope> GetApiScopes()
         {
             string apiScopesStr = Environment.GetEnvironmentVariable("API_SCOPES_INLINE");
             if (string.IsNullOrWhiteSpace(apiScopesStr))
@@ -94,7 +103,7 @@ namespace OpenIdConnectServer
             return apiScopes;
         }
 
-        public static IEnumerable<ApiResource> GetApiResources()
+        public IEnumerable<ApiResource> GetApiResources()
         {
             string apiResourcesStr = Environment.GetEnvironmentVariable("API_RESOURCES_INLINE");
             if (string.IsNullOrWhiteSpace(apiResourcesStr))
@@ -110,7 +119,7 @@ namespace OpenIdConnectServer
             return apiResources;
         }
 
-        public static IEnumerable<Client> GetClients()
+        public IEnumerable<Client> GetClients()
         {
             string configStr = Environment.GetEnvironmentVariable("CLIENTS_CONFIGURATION_INLINE");
             if (string.IsNullOrWhiteSpace(configStr))
@@ -126,18 +135,22 @@ namespace OpenIdConnectServer
             return configClients;
         }
 
-        public static IEnumerable<IdentityResource> GetIdentityResources()
+        public IEnumerable<IdentityResource> GetIdentityResources()
         {
             var standardResources = new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Email()
-            };
-            return standardResources.Union(GetCustomIdentityResources());
+                new IdentityResources.Email(),
+                new IdentityResource(
+                    name: "roles",
+                    userClaims: new[] { "resource_access" },
+                    displayName: "Your profile data")
+                };
+            return standardResources.Union(this.GetCustomIdentityResources());
         }
 
-        public static List<TestUser> GetUsers()
+        public List<TestUser> GetUsers()
         {
             string configStr = Environment.GetEnvironmentVariable("USERS_CONFIGURATION_INLINE");
             if (string.IsNullOrWhiteSpace(configStr))
@@ -153,7 +166,7 @@ namespace OpenIdConnectServer
             return configUsers;
         }
 
-        private static IEnumerable<IdentityResource> GetCustomIdentityResources()
+        private IEnumerable<IdentityResource> GetCustomIdentityResources()
         {
             string identityResourcesStr = Environment.GetEnvironmentVariable("IDENTITY_RESOURCES_INLINE");
             if (string.IsNullOrWhiteSpace(identityResourcesStr))

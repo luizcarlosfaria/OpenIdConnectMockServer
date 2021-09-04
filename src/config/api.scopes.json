@@ -1,9 +1,10 @@
 [
   {
-    "Name": "roles",
+    "Name": "rolesx",
     "UserClaims": [
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-      "xemail"
+      "xemail",
+      "resource_accessx"
     ]
   }
 ]
