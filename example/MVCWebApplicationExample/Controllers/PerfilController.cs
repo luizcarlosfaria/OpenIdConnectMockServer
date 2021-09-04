@@ -41,7 +41,7 @@ namespace MVCWebApplicationExample.Controllers
 
             await this.HttpContext.SignOutAsync("OpenIdConnect");
 
-            string path = UrlEncoder.Default.Encode(configuration.GetValue<string>("applicationUrl"));
+            string path = UrlEncoder.Default.Encode($"{this.Request.Scheme}://{this.Request.Host.Value}/");
 
             //Keycloak
             //return this.Redirect($"{configuration.GetValue<string>("oidc:Authority")}/protocol/openid-connect/logout?redirect_uri={path}"); //?=encodedRedirectUri
