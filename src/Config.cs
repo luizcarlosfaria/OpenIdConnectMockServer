@@ -13,6 +13,9 @@ namespace OpenIdConnectServer
 {
   public static class Config
     {
+        //GrantType
+        
+
         public static AspNetServicesOptions GetAspNetServicesOptions() {
             string aspNetServicesOptionsStr = Environment.GetEnvironmentVariable("ASPNET_SERVICES_OPTIONS_INLINE");
             if (string.IsNullOrWhiteSpace(aspNetServicesOptionsStr))

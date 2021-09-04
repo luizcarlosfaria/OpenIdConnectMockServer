@@ -14,7 +14,7 @@ namespace IdentityServerHost.Quickstart.UI
     {
         public DiagnosticsViewModel(AuthenticateResult result)
         {
-            AuthenticateResult = result;
+            this.AuthenticateResult = result;
 
             if (result.Properties.Items.ContainsKey("client_list"))
             {
@@ -22,7 +22,7 @@ namespace IdentityServerHost.Quickstart.UI
                 var bytes = Base64Url.Decode(encoded);
                 var value = Encoding.UTF8.GetString(bytes);
 
-                Clients = JsonConvert.DeserializeObject<string[]>(value);
+                this.Clients = JsonConvert.DeserializeObject<string[]>(value);
             }
         }
 

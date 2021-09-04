@@ -31,10 +31,10 @@ namespace IdentityServerHost.Quickstart.UI
             IResourceStore resources,
             IEventService events)
         {
-            _interaction = interaction;
-            _clients = clients;
-            _resources = resources;
-            _events = events;
+            this._interaction = interaction;
+            this._clients = clients;
+            this._resources = resources;
+            this._events = events;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace IdentityServerHost.Quickstart.UI
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View("Index", await BuildViewModelAsync());
+            return this.View("Index", await this.BuildViewModelAsync());
         }
 
         /// <summary>
@@ -53,23 +53,23 @@ namespace IdentityServerHost.Quickstart.UI
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Revoke(string clientId)
         {
-            await _interaction.RevokeUserConsentAsync(clientId);
-            await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
+            await this._interaction.RevokeUserConsentAsync(clientId);
+            await this._events.RaiseAsync(new GrantsRevokedEvent(this.User.GetSubjectId(), clientId));
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
 
         private async Task<GrantsViewModel> BuildViewModelAsync()
         {
-            var grants = await _interaction.GetAllUserGrantsAsync();
+            var grants = await this._interaction.GetAllUserGrantsAsync();
 
             var list = new List<GrantViewModel>();
             foreach(var grant in grants)
             {
-                var client = await _clients.FindClientByIdAsync(grant.ClientId);
+                var client = await this._clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)
                 {
-                    var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                    var resources = await this._resources.FindResourcesByScopeAsync(grant.Scopes);
 
                     var item = new GrantViewModel()
                     {

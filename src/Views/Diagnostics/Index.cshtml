@@ -16,7 +16,8 @@
                         @foreach (var claim in Model.AuthenticateResult.Principal.Claims)
                         {
                             <dt>@claim.Type</dt>
-                            <dd>@claim.Value</dd>
+							<dd style='font-size:10px !important'>@claim.ValueType</dd>
+							<dd>@claim.Value</dd>
                         }
                     </dl>
                 </div>

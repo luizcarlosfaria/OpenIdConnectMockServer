@@ -1,0 +1,48 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:13073/",
+      "sslPort": 44380
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "API_RESOURCES_PATH": "./config/api.resources.json",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SERVER_OPTIONS_PATH": "./config/_server-options.json",
+        "CLIENTS_CONFIGURATION_PATH": "./config/clients.json",
+        "ACCOUNT_OPTIONS_PATH": "./config/_account-options.json",
+        "ASPNETCORE_URLS": "https://+:12443;http://+:12080",
+        "API_SCOPES_PATH": "./config/api.scopes.json",
+        "USERS_CONFIGURATION_PATH": "./config/users.json"
+      }
+    },
+    "OpenIdConnectServerMock": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "API_RESOURCES_PATH": "./config/api.resources.json",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SERVER_OPTIONS_PATH": "./config/_server-options.json",
+        "CLIENTS_CONFIGURATION_PATH": "./config/clients.json",
+        "ACCOUNT_OPTIONS_PATH": "./config/_account-options.json",
+        "ASPNETCORE_URLS": "https://+:12443;http://+:12080",
+        "API_SCOPES_PATH": "./config/api.scopes.json",
+        "USERS_CONFIGURATION_PATH": "./config/users.json"
+      },
+      "applicationUrl": "https://localhost:12443;http://localhost:12080"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  }
+}

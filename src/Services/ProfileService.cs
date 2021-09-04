@@ -16,18 +16,18 @@ namespace OpenIdConnectServer.Services
 
     public ProfileService(TestUserStore userStore, ILogger<ProfileService> logger)
     {
-        _userStore = userStore;
-        Logger = logger;
+            this._userStore = userStore;
+            this.Logger = logger;
     }
 
     public Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
         var subjectId = context.Subject.GetSubjectId();
-        Logger.LogDebug("Getting profile data for subjectId: {subjectId}", subjectId);
+            this.Logger.LogDebug("Getting profile data for subjectId: {subjectId}", subjectId);
         var user = this._userStore.FindBySubjectId(subjectId);
         if (user != null)
         {
-            Logger.LogDebug("The user was found in store");
+                this.Logger.LogDebug("The user was found in store");
             var claims = context.FilterClaims(user.Claims);
             context.AddRequestedClaims(claims);
         }
@@ -37,10 +37,10 @@ namespace OpenIdConnectServer.Services
     public Task IsActiveAsync(IsActiveContext context)
     {
         var subjectId = context.Subject.GetSubjectId();
-        Logger.LogDebug("Checking if the user is active for subjectId: {subject}", subjectId);
+            this.Logger.LogDebug("Checking if the user is active for subjectId: {subject}", subjectId);
         var user = this._userStore.FindBySubjectId(subjectId);
         context.IsActive = user?.IsActive ?? false;
-        Logger.LogDebug("The user is active: {isActive}", context.IsActive);
+            this.Logger.LogDebug("The user is active: {isActive}", context.IsActive);
         return Task.CompletedTask;
     }
   }

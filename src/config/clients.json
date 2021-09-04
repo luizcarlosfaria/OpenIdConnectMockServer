@@ -1,46 +1,89 @@
-[{
+[
+  {
     "ClientId": "implicit-mock-client",
     "Description": "Client for implicit flow",
     "AllowedGrantTypes": [
-        "implicit"
+      "implicit"
     ],
     "AllowAccessTokensViaBrowser": true,
     "RedirectUris": [
-        "http://localhost:3000/auth/oidc",
-        "http://localhost:4004/auth/oidc"
+      "http://localhost:3000/auth/oidc",
+      "http://localhost:4004/auth/oidc"
     ],
     "AllowedScopes": [
-        "openid",
-        "profile",
-        "email"
+      "openid",
+      "profile",
+      "email"
     ],
     "IdentityTokenLifetime": 3600,
     "AccessTokenLifetime": 3600
-},
-{
+  },
+  {
     "ClientId": "client-credentials-mock-client",
     "ClientSecrets": [
       "client-credentials-mock-client-secret"
     ],
     "Description": "Client for client credentials flow",
     "AllowedGrantTypes": [
-        "client_credentials"
+      "client_credentials"
     ],
     "AllowedScopes": [
-        "some-app"
+      "some-app"
     ],
     "ClientClaimsPrefix": "",
     "Claims": [
-        {
-            "Type": "string_claim",
-            "Value": "string_claim_value"
-        },
-        {
-            "Type": "json_claim",
-            "Value": "['value1', 'value2']",
-            "ValueType": "json"
-        }
+      {
+        "Type": "string_claim",
+        "Value": "string_claim_value"
+      },
+      {
+        "Type": "json_claim",
+        "Value": "['value1', 'value2']",
+        "ValueType": "json"
+      }
     ]
 
-}
+  },
+  {
+    "ClientId": "00000000-0000-0000-0000-000000000001",
+    "ClientSecrets": [
+      "00000000-0000-0000-0000-000000000001"
+    ],
+    "AllowAccessTokensViaBrowser": false,
+    //"RequirePkce": false,
+    "RedirectUris": [
+      "https://localhost:5001/signin-oidc"
+    ],
+    "Description": "Client for client credentials flow",
+    "AllowedGrantTypes": [
+      //"client_credentials",
+      //"hybrid",
+      //"client_credentials",
+      "authorization_code"
+    ],
+    "AllowedScopes": [
+      "openid",
+      "profile",
+      "roles",
+      "offline_access",
+      "email",
+      "web-origins",
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    ],
+    //"ClientClaimsPrefix": "",
+    "Claims": [
+      {
+        "Type": "string_claim",
+        "Value": "string_claim_value"
+      },
+      {
+        "Type": "json_claim",
+        "Value": "['value1', 'value2']",
+        "ValueType": "json"
+      }
+    ],
+    "AllowOfflineAccess" : true,
+    "IdentityTokenLifetime": 3600,
+    "AccessTokenLifetime": 3600
+  }
 ]

@@ -14,8 +14,8 @@ namespace OpenIdConnectServer.Middlewares
 
         public BasePathMiddleware(RequestDelegate next, IdentityServerOptions options)
         {
-            _next = next;
-            _options = options;
+            this._next = next;
+            this._options = options;
         }
 
         public async Task Invoke(HttpContext context)
@@ -27,7 +27,7 @@ namespace OpenIdConnectServer.Middlewares
                 request.Path = request.Path.Value.Substring(basePath.Length);
                 context.SetIdentityServerBasePath(basePath);
             }
-            await _next(context);
+            await this._next(context);
         }
     }
 }

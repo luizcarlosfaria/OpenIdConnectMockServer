@@ -36,12 +36,12 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // if the TestUserStore is not in DI, then we'll just use the global users collection
             // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-            _users = users ?? new TestUserStore(TestUsers.Users);
+            this._users = users ?? new TestUserStore(TestUsers.Users);
 
-            _interaction = interaction;
-            _clientStore = clientStore;
-            _logger = logger;
-            _events = events;
+            this._interaction = interaction;
+            this._clientStore = clientStore;
+            this._logger = logger;
+            this._events = events;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace IdentityServerHost.Quickstart.UI
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
-            if (Url.IsLocalUrl(returnUrl) == false && _interaction.IsValidReturnUrl(returnUrl) == false)
+            if (this.Url.IsLocalUrl(returnUrl) == false && this._interaction.IsValidReturnUrl(returnUrl) == false)
             {
                 // user might have clicked on a malicious link - should be logged
                 throw new Exception("invalid return URL");
@@ -62,7 +62,7 @@ namespace IdentityServerHost.Quickstart.UI
             // start challenge and roundtrip the return URL and scheme 
             var props = new AuthenticationProperties
             {
-                RedirectUri = Url.Action(nameof(Callback)), 
+                RedirectUri = this.Url.Action(nameof(Callback)), 
                 Items =
                 {
                     { "returnUrl", returnUrl }, 
@@ -70,7 +70,7 @@ namespace IdentityServerHost.Quickstart.UI
                 }
             };
 
-            return Challenge(props, scheme);
+            return this.Challenge(props, scheme);
             
         }
 
@@ -81,26 +81,26 @@ namespace IdentityServerHost.Quickstart.UI
         public async Task<IActionResult> Callback()
         {
             // read external identity from the temporary cookie
-            var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            var result = await this.HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
             }
 
-            if (_logger.IsEnabled(LogLevel.Debug))
+            if (this._logger.IsEnabled(LogLevel.Debug))
             {
                 var externalClaims = result.Principal.Claims.Select(c => $"{c.Type}: {c.Value}");
-                _logger.LogDebug("External claims: {@claims}", externalClaims);
+                this._logger.LogDebug("External claims: {@claims}", externalClaims);
             }
 
             // lookup our user and external provider info
-            var (user, provider, providerUserId, claims) = FindUserFromExternalProvider(result);
+            var (user, provider, providerUserId, claims) = this.FindUserFromExternalProvider(result);
             if (user == null)
             {
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                user = AutoProvisionUser(provider, providerUserId, claims);
+                user = this.AutoProvisionUser(provider, providerUserId, claims);
             }
 
             // this allows us to collect any additional claims or properties
@@ -108,7 +108,7 @@ namespace IdentityServerHost.Quickstart.UI
             // this is typically used to store data needed for signout from those protocols.
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
-            ProcessLoginCallback(result, additionalLocalClaims, localSignInProps);
+            this.ProcessLoginCallback(result, additionalLocalClaims, localSignInProps);
             
             // issue authentication cookie for user
             var isuser = new IdentityServerUser(user.SubjectId)
@@ -118,17 +118,17 @@ namespace IdentityServerHost.Quickstart.UI
                 AdditionalClaims = additionalLocalClaims
             };
 
-            await HttpContext.SignInAsync(isuser, localSignInProps);
+            await this.HttpContext.SignInAsync(isuser, localSignInProps);
 
             // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            await this.HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
             // retrieve return URL
             var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
 
             // check if external login is in the context of an OIDC request
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.SubjectId, user.Username, true, context?.Client.ClientId));
+            var context = await this._interaction.GetAuthorizationContextAsync(returnUrl);
+            await this._events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.SubjectId, user.Username, true, context?.Client.ClientId));
 
             if (context != null)
             {
@@ -140,7 +140,7 @@ namespace IdentityServerHost.Quickstart.UI
                 }
             }
 
-            return Redirect(returnUrl);
+            return this.Redirect(returnUrl);
         }
 
         private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims) FindUserFromExternalProvider(AuthenticateResult result)
@@ -162,14 +162,14 @@ namespace IdentityServerHost.Quickstart.UI
             var providerUserId = userIdClaim.Value;
 
             // find external user
-            var user = _users.FindByExternalProvider(provider, providerUserId);
+            var user = this._users.FindByExternalProvider(provider, providerUserId);
 
             return (user, provider, providerUserId, claims);
         }
 
         private TestUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
         {
-            var user = _users.AutoProvisionUser(provider, providerUserId, claims.ToList());
+            var user = this._users.AutoProvisionUser(provider, providerUserId, claims.ToList());
             return user;
         }
 

@@ -15,16 +15,16 @@ namespace OpenIdConnectServer.Controllers
 
         public UserController(TestUserStore userStore, ILogger<UserController> logger)
         {
-            _usersStore = userStore;
-            Logger = logger;
+            this._usersStore = userStore;
+            this.Logger = logger;
         }
 
         [HttpGet("{subjectId}")]
         public IActionResult GetUser([FromRoute]string subjectId)
         {
-            var user = _usersStore.FindBySubjectId(subjectId);
-            Logger.LogDebug("User found: {subjectId}", subjectId);
-            return Json(user);
+            var user = this._usersStore.FindBySubjectId(subjectId);
+            this.Logger.LogDebug("User found: {subjectId}", subjectId);
+            return this.Json(user);
         }
 
         [HttpPost]
@@ -32,16 +32,16 @@ namespace OpenIdConnectServer.Controllers
         {
             var claims = new List<Claim>(user.Claims);
             claims.Add(new Claim(ClaimTypes.Name, user.Username));
-            var newUser =_usersStore.AutoProvisionUser("Alex", user.SubjectId, new List<Claim>(user.Claims));
+            var newUser = this._usersStore.AutoProvisionUser("Alex", user.SubjectId, new List<Claim>(user.Claims));
             newUser.SubjectId = user.SubjectId;
             newUser.Username = user.Username;
             newUser.Password = user.Password;
             newUser.ProviderName = string.Empty;
             newUser.ProviderSubjectId = string.Empty;
 
-            Logger.LogDebug("New user added: {user}", user.SubjectId);
+            this.Logger.LogDebug("New user added: {user}", user.SubjectId);
 
-            return Json(user.SubjectId);
+            return this.Json(user.SubjectId);
         }
     }
 }

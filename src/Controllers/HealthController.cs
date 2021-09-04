@@ -7,7 +7,7 @@ namespace OpenIdConnectServer.Controllers
         [HttpGet("/health")]
         public IActionResult Get()
         {
-            return Ok();
+            return this.Ok();
         }
     }
 }

@@ -34,34 +34,34 @@ namespace IdentityServerHost.Quickstart.UI
             IOptions<IdentityServerOptions> options,
             ILogger<DeviceController> logger)
         {
-            _interaction = interaction;
-            _events = eventService;
-            _options = options;
-            _logger = logger;
+            this._interaction = interaction;
+            this._events = eventService;
+            this._options = options;
+            this._logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            string userCodeParamName = _options.Value.UserInteraction.DeviceVerificationUserCodeParameter;
-            string userCode = Request.Query[userCodeParamName];
-            if (string.IsNullOrWhiteSpace(userCode)) return View("UserCodeCapture");
+            string userCodeParamName = this._options.Value.UserInteraction.DeviceVerificationUserCodeParameter;
+            string userCode = this.Request.Query[userCodeParamName];
+            if (string.IsNullOrWhiteSpace(userCode)) return this.View("UserCodeCapture");
 
-            var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+            var vm = await this.BuildViewModelAsync(userCode);
+            if (vm == null) return this.View("Error");
 
             vm.ConfirmUserCode = true;
-            return View("UserCodeConfirmation", vm);
+            return this.View("UserCodeConfirmation", vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserCodeCapture(string userCode)
         {
-            var vm = await BuildViewModelAsync(userCode);
-            if (vm == null) return View("Error");
+            var vm = await this.BuildViewModelAsync(userCode);
+            if (vm == null) return this.View("Error");
 
-            return View("UserCodeConfirmation", vm);
+            return this.View("UserCodeConfirmation", vm);
         }
 
         [HttpPost]
@@ -70,17 +70,17 @@ namespace IdentityServerHost.Quickstart.UI
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var result = await ProcessConsent(model);
-            if (result.HasValidationError) return View("Error");
+            var result = await this.ProcessConsent(model);
+            if (result.HasValidationError) return this.View("Error");
 
-            return View("Success");
+            return this.View("Success");
         }
 
         private async Task<ProcessConsentResult> ProcessConsent(DeviceAuthorizationInputModel model)
         {
             var result = new ProcessConsentResult();
 
-            var request = await _interaction.GetAuthorizationContextAsync(model.UserCode);
+            var request = await this._interaction.GetAuthorizationContextAsync(model.UserCode);
             if (request == null) return result;
 
             ConsentResponse grantedConsent = null;
@@ -91,7 +91,7 @@ namespace IdentityServerHost.Quickstart.UI
                 grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+                await this._events.RaiseAsync(new ConsentDeniedEvent(this.User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
             }
             // user clicked 'yes' - validate the data
             else if (model.Button == "yes")
@@ -113,7 +113,7 @@ namespace IdentityServerHost.Quickstart.UI
                     };
 
                     // emit event
-                    await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                    await this._events.RaiseAsync(new ConsentGrantedEvent(this.User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace IdentityServerHost.Quickstart.UI
             if (grantedConsent != null)
             {
                 // communicate outcome of consent back to identityserver
-                await _interaction.HandleRequestAsync(model.UserCode, grantedConsent);
+                await this._interaction.HandleRequestAsync(model.UserCode, grantedConsent);
 
                 // indicate that's it ok to redirect back to authorization endpoint
                 result.RedirectUri = model.ReturnUrl;
@@ -137,7 +137,7 @@ namespace IdentityServerHost.Quickstart.UI
             else
             {
                 // we need to redisplay the consent UI
-                result.ViewModel = await BuildViewModelAsync(model.UserCode, model);
+                result.ViewModel = await this.BuildViewModelAsync(model.UserCode, model);
             }
 
             return result;
@@ -145,10 +145,10 @@ namespace IdentityServerHost.Quickstart.UI
 
         private async Task<DeviceAuthorizationViewModel> BuildViewModelAsync(string userCode, DeviceAuthorizationInputModel model = null)
         {
-            var request = await _interaction.GetAuthorizationContextAsync(userCode);
+            var request = await this._interaction.GetAuthorizationContextAsync(userCode);
             if (request != null)
             {
-                return CreateConsentViewModel(userCode, model, request);
+                return this.CreateConsentViewModel(userCode, model, request);
             }
 
             return null;
@@ -170,7 +170,7 @@ namespace IdentityServerHost.Quickstart.UI
                 AllowRememberConsent = request.Client.AllowRememberConsent
             };
 
-            vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
+            vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => this.CreateScopeViewModel(x, vm.ScopesConsented.Contains(x.Name) || model == null)).ToArray();
 
             var apiScopes = new List<ScopeViewModel>();
             foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
@@ -178,13 +178,13 @@ namespace IdentityServerHost.Quickstart.UI
                 var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
                 if (apiScope != null)
                 {
-                    var scopeVm = CreateScopeViewModel(parsedScope, apiScope, vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
+                    var scopeVm = this.CreateScopeViewModel(parsedScope, apiScope, vm.ScopesConsented.Contains(parsedScope.RawValue) || model == null);
                     apiScopes.Add(scopeVm);
                 }
             }
             if (ConsentOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
             {
-                apiScopes.Add(GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
+                apiScopes.Add(this.GetOfflineAccessScope(vm.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null));
             }
             vm.ApiScopes = apiScopes;
 
