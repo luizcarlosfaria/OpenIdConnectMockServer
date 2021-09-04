@@ -28,9 +28,24 @@ namespace MVCWebApplicationExample.Controllers
         }
 
         [Authorize("profile")]
-        public IActionResult Privacy()
+        public IActionResult RoleProfile()
         {
-            return this.View();
+            this.ViewData["Title"] = "Role: profile";
+            return this.View("Role");
+        }
+
+        [Authorize("email")]
+        public IActionResult RoleEmail()
+        {
+            this.ViewData["Title"] = "Role: profile";
+            return this.View("Role");
+        }
+
+        [Authorize("admin")]
+        public IActionResult RoleAdmin()
+        {
+            this.ViewData["Title"] = "Role: admin";
+            return this.View("Role");
         }
 
 
