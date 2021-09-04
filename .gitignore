@@ -13,3 +13,5 @@ obj
 #Quickstart
 #Views
 #wwwroot
+*.user
+.vs/

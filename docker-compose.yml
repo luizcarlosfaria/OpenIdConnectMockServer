@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  identity_mock:
+    image: ${DOCKER_REGISTRY-}openidconnectservermock
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+
+  example:
+    image: ${DOCKER_REGISTRY-}mvcwebapplicationexample
+    build:
+      context: .
+      dockerfile: example/MVCWebApplicationExample/Dockerfile
+
