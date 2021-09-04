@@ -30,7 +30,6 @@ namespace MVCWebApplicationExample
 {
     public class Startup
     {
-        private IServiceProvider ApplicationServices;
 
         public Startup(IConfiguration configuration)
         {
@@ -187,7 +186,6 @@ namespace MVCWebApplicationExample
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            this.ApplicationServices = app.ApplicationServices;
         }
 
         private static Task ConvertKeycloakRolesInAspNetRoles(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext context)
