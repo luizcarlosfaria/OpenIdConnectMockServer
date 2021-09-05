@@ -50,8 +50,12 @@
 
             @foreach (var currentUser in OpenIdConnectServer.ConfigReporitory.Instance.GetUsers())
             {
+
+				string cardColor = currentUser.Claims.SingleOrDefault(it => it.Type=="ui_color")?.Value ?? "bg-light";
+				string buttonColor = currentUser.Claims.SingleOrDefault(it => it.Type=="ui_btn_color")?.Value ?? "bg-dark";
+
                 
-            <div class="card text-white bg-primary mb-3">
+            <div class="card text-white @cardColor mb-3">
                 <div class="card-header">@currentUser.Username</div>
                 <div class="card-body">
                     <h5 class="card-title">@currentUser.Username : @currentUser.Password</h5>
@@ -69,7 +73,7 @@
                         }
                         
                     </p>
-                    <a href="#" class="btn btn-success login-as text-white" data-u="@currentUser.Username" data-p="@currentUser.Password">Login as @currentUser.Username</a>    
+                    <a href="#" class="btn @buttonColor login-as text-white" data-u="@currentUser.Username" data-p="@currentUser.Password">Login as @currentUser.Username</a>    
                 </div>
             </div>
 

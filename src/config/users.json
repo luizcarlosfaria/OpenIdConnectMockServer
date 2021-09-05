@@ -42,6 +42,14 @@
       {
         "Type": "some-identity-resource-claim",
         "Value": "Sam's Identity Resource Custom Claim"
+      },
+      {
+        "Type": "ui_color",
+        "Value": "bg-primary"
+      },
+      {
+        "Type": "ui_btn_color",
+        "Value": "bg-success"
       }
     ]
   },
@@ -73,6 +81,14 @@
       {
         "Type": "some-identity-resource-claim",
         "Value": "Sam's Identity Resource Custom Claim"
+      },
+      {
+        "Type": "ui_color",
+        "Value": "bg-success"
+      },
+      {
+        "Type": "ui_btn_color",
+        "Value": "bg-primary"
       }
     ]
   }
