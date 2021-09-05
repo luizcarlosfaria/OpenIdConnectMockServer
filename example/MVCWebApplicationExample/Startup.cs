@@ -58,11 +58,10 @@ namespace MVCWebApplicationExample
             })
             .AddOpenIdConnect(options =>
             {
-
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
                 this.Configuration.Bind("oidc", options);
-
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                
 
                 options.Events = new OpenIdConnectEvents
                 {
