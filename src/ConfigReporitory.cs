@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace OpenIdConnectServer
 {
-  public class ConfigReporitory
+    public class ConfigReporitory
     {
         public static ConfigReporitory Instance { get; private set; }
 
@@ -23,45 +23,35 @@ namespace OpenIdConnectServer
             this.configuration = configuration;
             Instance = this;
         }
-        
 
-        public AspNetServicesOptions GetAspNetServicesOptions() {
-            string aspNetServicesOptionsStr = Environment.GetEnvironmentVariable("ASPNET_SERVICES_OPTIONS_INLINE");
-            if (string.IsNullOrWhiteSpace(aspNetServicesOptionsStr))
-            {
-                var aspNetServicesOptionsPath = Environment.GetEnvironmentVariable("ASPNET_SERVICES_OPTIONS_PATH");
-                if (string.IsNullOrWhiteSpace(aspNetServicesOptionsPath))
-                {
-                    return new AspNetServicesOptions();
-                }
-                aspNetServicesOptionsStr = File.ReadAllText(aspNetServicesOptionsPath);
-            }
-            var aspNetServicesOptions = JsonConvert.DeserializeObject<AspNetServicesOptions>(aspNetServicesOptionsStr);
-            return aspNetServicesOptions;
-        }
-
-        public IdentityServerOptions GetServerOptions()
+        private T GetConfiguration<T>(string key, Func<T> empty, params JsonConverter[] converters)
         {
-            string serverOptionsStr = Environment.GetEnvironmentVariable("SERVER_OPTIONS_INLINE");
-            if (string.IsNullOrWhiteSpace(serverOptionsStr))
+            string content = this.configuration.GetValue<string>($"{key}_INLINE");
+            if (string.IsNullOrWhiteSpace(content))
             {
-                var serverOptionsFilePath = Environment.GetEnvironmentVariable("SERVER_OPTIONS_PATH");
-                if (string.IsNullOrWhiteSpace(serverOptionsFilePath))
+                var path = this.configuration.GetValue<string>($"{key}_PATH");
+                if (string.IsNullOrWhiteSpace(path))
                 {
-                    return new IdentityServerOptions();
+                    return empty();
                 }
-                serverOptionsStr = File.ReadAllText(serverOptionsFilePath);
+                content = File.ReadAllText(path);
             }
-            var serverOptions = JsonConvert.DeserializeObject<IdentityServerOptions>(serverOptionsStr);
-            return serverOptions;
+            var returnValue = JsonConvert.DeserializeObject<T>(content, converters);
+            return returnValue;
         }
+
+
+        public AspNetServicesOptions GetAspNetServicesOptions() => this.GetConfiguration("ASPNET_SERVICES_OPTIONS", () => new AspNetServicesOptions());
+
+        public IdentityServerOptions GetServerOptions() => this.GetConfiguration("SERVER_OPTIONS", () => new IdentityServerOptions());
+
 
         public void ConfigureAccountOptions()
         {
-            string accountOptionsStr = Environment.GetEnvironmentVariable("ACCOUNT_OPTIONS_INLINE");
+            string accountOptionsStr = this.configuration.GetValue<string>("ACCOUNT_OPTIONS_INLINE");
             if (string.IsNullOrWhiteSpace(accountOptionsStr))
             {
-                var accountOptionsFilePath = Environment.GetEnvironmentVariable("ACCOUNT_OPTIONS_PATH");
+                var accountOptionsFilePath = this.configuration.GetValue<string>("ACCOUNT_OPTIONS_PATH");
                 if (string.IsNullOrWhiteSpace(accountOptionsFilePath))
                 {
                     return;
@@ -71,69 +61,18 @@ namespace OpenIdConnectServer
             AccountOptionsHelper.ConfigureAccountOptions(accountOptionsStr);
         }
 
-        public IEnumerable<string> GetServerCorsAllowedOrigins()
-        {
-            string allowedOriginsStr = Environment.GetEnvironmentVariable("SERVER_CORS_ALLOWED_ORIGINS_INLINE");
-            if (string.IsNullOrWhiteSpace(allowedOriginsStr))
-            {
-                var allowedOriginsFilePath = Environment.GetEnvironmentVariable("SERVER_CORS_ALLOWED_ORIGINS_PATH");
-                if (string.IsNullOrWhiteSpace(allowedOriginsFilePath))
-                {
-                    return null;
-                }
-                allowedOriginsStr = File.ReadAllText(allowedOriginsFilePath);
-            }
-            var allowedOrigins = JsonConvert.DeserializeObject<IEnumerable<string>>(allowedOriginsStr);
-            return allowedOrigins;
-        }
+        public IEnumerable<string> GetServerCorsAllowedOrigins() => this.GetConfiguration<IEnumerable<string>>("SERVER_CORS_ALLOWED_ORIGINS", () => null);
 
-        public IEnumerable<ApiScope> GetApiScopes()
-        {
-            string apiScopesStr = Environment.GetEnvironmentVariable("API_SCOPES_INLINE");
-            if (string.IsNullOrWhiteSpace(apiScopesStr))
-            {
-                var apiScopesFilePath = Environment.GetEnvironmentVariable("API_SCOPES_PATH");
-                if (string.IsNullOrWhiteSpace(apiScopesFilePath))
-                {
-                    return new List<ApiScope>();
-                }
-                apiScopesStr = File.ReadAllText(apiScopesFilePath);
-            }
-            var apiScopes = JsonConvert.DeserializeObject<IEnumerable<ApiScope>>(apiScopesStr);
-            return apiScopes;
-        }
+        public IEnumerable<ApiScope> GetApiScopes() => this.GetConfiguration("API_SCOPES", () => new List<ApiScope>());
 
-        public IEnumerable<ApiResource> GetApiResources()
-        {
-            string apiResourcesStr = Environment.GetEnvironmentVariable("API_RESOURCES_INLINE");
-            if (string.IsNullOrWhiteSpace(apiResourcesStr))
-            {
-                var apiResourcesFilePath = Environment.GetEnvironmentVariable("API_RESOURCES_PATH");
-                if (string.IsNullOrWhiteSpace(apiResourcesFilePath))
-                {
-                    return new List<ApiResource>();
-                }
-                apiResourcesStr = File.ReadAllText(apiResourcesFilePath);
-            }
-            var apiResources = JsonConvert.DeserializeObject<IEnumerable<ApiResource>>(apiResourcesStr, new SecretJsonConverter());
-            return apiResources;
-        }
+        public IEnumerable<ApiResource> GetApiResources() => this.GetConfiguration<IEnumerable<ApiResource>>("API_RESOURCES", () => new List<ApiResource>(), new SecretJsonConverter());
 
-        public IEnumerable<Client> GetClients()
-        {
-            string configStr = Environment.GetEnvironmentVariable("CLIENTS_CONFIGURATION_INLINE");
-            if (string.IsNullOrWhiteSpace(configStr))
-            {
-                var configFilePath = Environment.GetEnvironmentVariable("CLIENTS_CONFIGURATION_PATH");
-                if (string.IsNullOrWhiteSpace(configFilePath))
-                {
-                    throw new ArgumentNullException("You must set either CLIENTS_CONFIGURATION_INLINE or CLIENTS_CONFIGURATION_PATH env variable");
-                }
-                configStr = File.ReadAllText(configFilePath);
-            }
-            var configClients = JsonConvert.DeserializeObject<IEnumerable<Client>>(configStr, new SecretJsonConverter(), new ClaimJsonConverter());
-            return configClients;
-        }
+        public IEnumerable<Client> GetClients() => this.GetConfiguration<IEnumerable<Client>>("CLIENTS_CONFIGURATION", () => throw new ArgumentNullException("You must set either CLIENTS_CONFIGURATION_INLINE or CLIENTS_CONFIGURATION_PATH env variable"), new SecretJsonConverter(), new ClaimJsonConverter());
+
+
+        public List<TestUser> GetUsers() => this.GetConfiguration("USERS_CONFIGURATION", () => new List<TestUser>(), new ClaimJsonConverter());
+
+        private IEnumerable<IdentityResource> GetCustomIdentityResources() => this.GetConfiguration<IEnumerable<IdentityResourceConfig>>("IDENTITY_RESOURCES", () => new List<IdentityResourceConfig>()).Select(c => new IdentityResource(c.Name, c.ClaimTypes));
 
         public IEnumerable<IdentityResource> GetIdentityResources()
         {
@@ -148,39 +87,6 @@ namespace OpenIdConnectServer
                     displayName: "Your profile data")
                 };
             return standardResources.Union(this.GetCustomIdentityResources());
-        }
-
-        public List<TestUser> GetUsers()
-        {
-            string configStr = Environment.GetEnvironmentVariable("USERS_CONFIGURATION_INLINE");
-            if (string.IsNullOrWhiteSpace(configStr))
-            {
-                var configFilePath = Environment.GetEnvironmentVariable("USERS_CONFIGURATION_PATH");
-                if (string.IsNullOrWhiteSpace(configFilePath))
-                {
-                    return new List<TestUser>();
-                }
-                configStr = File.ReadAllText(configFilePath);
-            }
-            var configUsers = JsonConvert.DeserializeObject<List<TestUser>>(configStr, new ClaimJsonConverter());
-            return configUsers;
-        }
-
-        private IEnumerable<IdentityResource> GetCustomIdentityResources()
-        {
-            string identityResourcesStr = Environment.GetEnvironmentVariable("IDENTITY_RESOURCES_INLINE");
-            if (string.IsNullOrWhiteSpace(identityResourcesStr))
-            {
-                var identityResourcesFilePath = Environment.GetEnvironmentVariable("IDENTITY_RESOURCES_PATH");
-                if (string.IsNullOrWhiteSpace(identityResourcesFilePath))
-                {
-                    return new List<IdentityResource>();
-                }
-                identityResourcesStr = File.ReadAllText(identityResourcesFilePath);
-            }
-
-            var identityResourceConfig = JsonConvert.DeserializeObject<IdentityResourceConfig[]>(identityResourcesStr);
-            return identityResourceConfig.Select(c => new IdentityResource(c.Name, c.ClaimTypes));
         }
 
         private class IdentityResourceConfig
