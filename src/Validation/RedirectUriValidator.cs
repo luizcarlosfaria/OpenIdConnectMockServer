@@ -13,7 +13,7 @@ namespace OpenIdConnectServer.Validation
         {
             bool returnValue = allowedUris.Any(allowedUri => Regex.Match(requestedUri, Regex.Escape(allowedUri).Replace("\\*", "[a-zA-Z0-9.]+?")).Success);
 
-            //bypass redirectUrl validation
+            //TODO: bypass redirectUrl validation
             returnValue = true;
 
             return returnValue;
