@@ -15,7 +15,9 @@ services:
   example:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:13080
+      - ASPNETCORE_URLS=http://+:13080;https://+:13443
+      - bearer__Authority=https://localhost10.gago.io:12443
+      - oidc__Authority=https://localhost10.gago.io:12443
     ports:
       - "13080:13080"
       - "13443:13443"

@@ -6,11 +6,11 @@ using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Newtonsoft.Json;
-using OpenIdConnectServer.JsonConverters;
-using OpenIdConnectServer.Helpers;
+using OpenIdConnectMockServer.JsonConverters;
+using OpenIdConnectMockServer.Helpers;
 using Microsoft.Extensions.Configuration;
 
-namespace OpenIdConnectServer
+namespace OpenIdConnectMockServer
 {
     public class ConfigReporitory
     {
@@ -79,11 +79,11 @@ namespace OpenIdConnectServer
             var standardResources = new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
+                new IdentityResources.Profile().AddUserClaim("email_verified"),
                 new IdentityResources.Email(),
                 new IdentityResource(
                     name: "roles",
-                    userClaims: new[] { "resource_access" },
+                    userClaims: new[] { "resource_access", "role", System.Security.Claims.ClaimTypes.Role },
                     displayName: "Your profile data")
                 };
             return standardResources.Union(this.GetCustomIdentityResources());

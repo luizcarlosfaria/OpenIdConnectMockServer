@@ -63,13 +63,13 @@
       "authorization_code"
     ],
     "AllowedScopes": [
-      "openid",
-      "profile",
-      "roles",
-      "offline_access",
-      "email",
-      "web-origins",
-      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+        "openid",
+        "profile",
+        "roles",
+        "offline_access",
+        "email",
+        "web-origins",
+        //"api_scope"
     ],
     //"ClientClaimsPrefix": "",
     "Claims": [

@@ -5,7 +5,7 @@ using IdentityServer4.Configuration;
 
 #pragma warning disable 1591
 
-namespace OpenIdConnectServer.Middlewares
+namespace OpenIdConnectMockServer.Middlewares
 {
     public class BasePathMiddleware
     {

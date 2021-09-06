@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using IdentityServer4.Models;
 
-namespace OpenIdConnectServer.JsonConverters
+namespace OpenIdConnectMockServer.JsonConverters
 {
     public class SecretJsonConverter : JsonConverter<Secret>
     {

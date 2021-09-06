@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace OpenIdConnectServer.JsonConverters
+namespace OpenIdConnectMockServer.JsonConverters
 {
     public class ClaimJsonConverter : JsonConverter<Claim>
     {

@@ -13,7 +13,7 @@
 				<span style="font-size:1.3em">Type: @claim.Type</span>
 				<span style="color:#c0c0c0">ValueType: @claim.ValueType</span>
 				<span>Value: @claim.Value</span>
-				<br>
+				<br />
 			}
 		</pre>
 
@@ -22,5 +22,6 @@
 
 		<dt>refresh token</dt>
 		<dd><pre>@await ViewContext.HttpContext.GetTokenAsync("refresh_token")</pre></dd>
+		<pre>@Html.Raw(ViewData["ApiClaims"])</pre>
 	}
 </div>

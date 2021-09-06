@@ -10,14 +10,14 @@ COPY ./src/keys /OpenIdConnectServerMock/keys
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["src/OpenIdConnectServerMock.csproj", "src/"]
-RUN dotnet restore "src/OpenIdConnectServerMock.csproj"
+COPY ["src/OpenIdConnectMockServer.csproj", "src/"]
+RUN dotnet restore "src/OpenIdConnectMockServer.csproj"
 COPY . .
 WORKDIR "/src/src"
-RUN dotnet build "OpenIdConnectServerMock.csproj" -c Release -o /app/build
+RUN dotnet build "OpenIdConnectMockServer.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "OpenIdConnectServerMock.csproj" -c Release -o /app/publish
+RUN dotnet publish "OpenIdConnectMockServer.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
@@ -26,4 +26,4 @@ COPY --from=publish /app/publish .
 HEALTHCHECK --interval=60s --timeout=2s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
 
-ENTRYPOINT ["dotnet", "OpenIdConnectServerMock.dll"]
+ENTRYPOINT ["dotnet", "OpenIdConnectMockServer.dll"]

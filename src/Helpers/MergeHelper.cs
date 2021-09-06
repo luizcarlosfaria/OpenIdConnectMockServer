@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace OpenIdConnectServer.Helpers
+namespace OpenIdConnectMockServer.Helpers
 {
     public static class MergeHelper
     {

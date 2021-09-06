@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using AspNetCorsOptions = Microsoft.AspNetCore.Cors.Infrastructure.CorsOptions;
 
-namespace OpenIdConnectServer.Helpers
+namespace OpenIdConnectMockServer.Helpers
 {
   public class AspNetServicesOptions
     {

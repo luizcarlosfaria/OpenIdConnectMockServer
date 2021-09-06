@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
-namespace OpenIdConnectServer.Helpers
+namespace OpenIdConnectMockServer.Helpers
 {
     public class AccountOptionsHelper
     {

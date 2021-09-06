@@ -37,11 +37,11 @@ namespace MVCWebApplicationExample.Controllers
         [Authorize("email")]
         public IActionResult RoleEmail()
         {
-            this.ViewData["Title"] = "Role: profile";
+            this.ViewData["Title"] = "Role: email";
             return this.View("Role");
         }
 
-        [Authorize("admin")]
+        [Authorize("email", Roles = "admin")]
         public IActionResult RoleAdmin()
         {
             this.ViewData["Title"] = "Role: admin";

@@ -25,6 +25,7 @@ using Microsoft.Extensions.Primitives;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Net.Http;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MVCWebApplicationExample
 {
@@ -34,6 +35,7 @@ namespace MVCWebApplicationExample
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -41,7 +43,6 @@ namespace MVCWebApplicationExample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = OpenIdConnectDefaults.AuthenticationScheme;
@@ -51,10 +52,19 @@ namespace MVCWebApplicationExample
             })
             .AddCookie(options =>
             {
-
                 options.LoginPath = new PathString("/perfil/entrar");
                 options.LogoutPath = new PathString("/perfil/sair");
                 options.AccessDeniedPath = new PathString("/perfil/acesso-negado");
+            })
+            .AddJwtBearer("Bearer", options =>
+            {
+                this.Configuration.Bind("bearer", options);
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+
             })
             .AddOpenIdConnect(options =>
             {
@@ -62,74 +72,34 @@ namespace MVCWebApplicationExample
 
                 this.Configuration.Bind("oidc", options);
                 
+                options.ClaimActions.MapAll();
+
+                //TODO: Falha de Segurança para uso em localhost
+                options.BackchannelHttpHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role,
+                };
 
                 options.Events = new OpenIdConnectEvents
                 {
-                    OnAuthenticationFailed = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnAuthorizationCodeReceived = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnMessageReceived = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnRedirectToIdentityProviderForSignOut = x =>
-                    {
-
-                    return Task.CompletedTask;
-                    },
-                    OnSignedOutCallbackRedirect = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnRemoteSignOut = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnTokenResponseReceived = tokenResponseReceivedContext =>
-                    {
-                        //BsonDocument doc = ConvertToBsonDocument(tokenResponseReceivedContext);
-
-                        //this.ApplicationServices.GetRequiredService<LogService>().Log(doc);
-                        return Task.CompletedTask;
-                    },
-                    OnUserInformationReceived = userInformationReceivedContext =>
-                    {
-                        //this.ApplicationServices.GetRequiredService<ProfileService>().OnUserInformationReceived(userInformationReceivedContext);
-                        return Task.CompletedTask;
-                    },
-                    OnAccessDenied = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
                     OnRemoteFailure = context =>
                     {
                         context.Response.Redirect("/");
                         context.HandleResponse();
                         return Task.CompletedTask;
                     },
-                    OnTicketReceived = x =>
-                    {
-                        return Task.CompletedTask;
-                    },
-
                     OnRedirectToIdentityProvider = context =>
                     {
                         //context.ProtocolMessage.RedirectUri = $"{this.Configuration.GetValue<string>("applicationUrl")}/signin-oidc";
-
                         return Task.CompletedTask;
                     },
-
-                   OnTokenValidated = ConvertKeycloakRolesInAspNetRoles,
-
-                    
                 };
-
-
 
             });
 
@@ -149,11 +119,16 @@ namespace MVCWebApplicationExample
 
                 options.AddPolicy("admin", new AuthorizationPolicyBuilder(OpenIdConnectDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
+                    .RequireClaim("email")
                     .RequireClaim("email_verified", "true")
-                    .RequireClaim(ClaimTypes.Email)
                     .RequireClaim(ClaimTypes.Role, "admin")
                     .Build());
 
+                //options.AddPolicy("admin", options => options.RequireClaim(ClaimTypes.Role, "admin"));
+
+                options.AddPolicy("ApiScope", new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
 
             });
 
@@ -163,6 +138,8 @@ namespace MVCWebApplicationExample
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+         
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -187,25 +164,5 @@ namespace MVCWebApplicationExample
 
         }
 
-        private static Task ConvertKeycloakRolesInAspNetRoles(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext context)
-        {
-            var claim = context.SecurityToken.Claims.SingleOrDefault(it => it.Type == "resource_access" && it.ValueType == "JSON");
-            if (claim != null)
-            {
-                JObject value = JsonConvert.DeserializeObject<JObject>(claim.Value);
-                string audience = context.SecurityToken.Audiences.Single();
-                var prop = value[audience];
-                var roles = prop?["roles"];
-                if (roles != null)
-                {
-                    var identity = (ClaimsIdentity)context.Principal.Identity;
-                    identity.AddClaims(
-                        roles.Select(it => new Claim(ClaimTypes.Role, it.Value<string>())).ToArray()
-                    );
-                }
-            }
-            return Task.CompletedTask;
-        }
-       
     }
 }

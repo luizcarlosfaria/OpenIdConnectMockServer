@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-namespace OpenIdConnectServer.Validation
+namespace OpenIdConnectMockServer.Validation
 {
     internal class RedirectUriValidator : IRedirectUriValidator
     {

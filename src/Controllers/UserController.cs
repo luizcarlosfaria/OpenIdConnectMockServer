@@ -5,7 +5,7 @@ using IdentityServer4.Test;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace OpenIdConnectServer.Controllers
+namespace OpenIdConnectMockServer.Controllers
 {
   [Route("api/v1/user")]
     public class UserController: Controller

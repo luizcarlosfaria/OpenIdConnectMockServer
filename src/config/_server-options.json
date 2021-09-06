@@ -4,7 +4,7 @@
         "ShowKeySet": true
     },
     "Authentication": {
-        "CookieSameSiteMode": "Lax",
-        "CheckSessionCookieSameSiteMode": "Lax"
+        //"CookieSameSiteMode": "Lax",
+        //"CheckSessionCookieSameSiteMode": "Lax"
     }
 }

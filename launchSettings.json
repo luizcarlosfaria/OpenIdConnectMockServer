@@ -4,7 +4,7 @@
       "commandName": "DockerCompose",
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "example",
-      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
+      "composeLaunchUrl": "{Scheme}://localhost1.gago.io:{ServicePort}",
       "commandVersion": "1.0",
       "serviceActions": {
         "example": "StartDebugging",

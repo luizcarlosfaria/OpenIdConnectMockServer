@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace OpenIdConnectServer.Controllers
+namespace OpenIdConnectMockServer.Controllers
 {
     public class HealthController : Controller
     {

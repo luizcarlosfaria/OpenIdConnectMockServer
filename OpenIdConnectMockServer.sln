@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenIdConnectServerMock", "src\OpenIdConnectServerMock.csproj", "{D2D3954E-1269-4589-BE97-18C111032105}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenIdConnectMockServer", "src\OpenIdConnectMockServer.csproj", "{D2D3954E-1269-4589-BE97-18C111032105}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCWebApplicationExample", "example\MVCWebApplicationExample\MVCWebApplicationExample.csproj", "{9D820C48-8682-47D1-9A4F-9AF2FB25B2A8}"
 EndProject

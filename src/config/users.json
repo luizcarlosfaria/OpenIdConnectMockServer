@@ -1,95 +1,79 @@
 [
-  {
-    "SubjectId": "1",
-    "Username": "user1",
-    "Password": "pwd",
-    "Claims": [
-      {
-        "Type": "name",
-        "Value": "Fraser Mcconnell"
-      },
-      {
-        "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-        "Value": "fraser.mcconnell@gmail.com"
-      },
-      {
-        "Type": "email",
-        "Value": "fraser.mcconnell@gmail.com"
-      },
-      {
-        "Type": "some-api-resource-claim",
-        "Value": "Sam's Api Resource Custom Claim"
-      },
-      {
-        "Type": "some-api-scope-claim",
-        "Value": "Sam's Api Scope Custom Claim"
-      },
-      {
-        "Type": "email_verified",
-        "Value": "true"
-      },
-      {
-        "Type": "resource_access",
-        "Value": "{\"jornada.gago.io\":{\"roles\":[\"jornada.participar\",\"jornada.gerenciar.editar\",\"jornada.gerenciar\",\"jornada.gerenciar.adicionar\",\"admin\",\"jornada.gerenciar.remover\"]}}",
-        "Issuer": "https://id.gago.io/auth/realms/gago",
-        "ValueType": "JSON"
-      },
-      {
-        "Type": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-        "Value": "[]",
-        "ValueType": "JSON"
-      },
-      {
-        "Type": "some-identity-resource-claim",
-        "Value": "Sam's Identity Resource Custom Claim"
-      },
-      {
-        "Type": "ui_color",
-        "Value": "bg-primary"
-      },
-      {
-        "Type": "ui_btn_color",
-        "Value": "bg-success"
-      }
-    ]
-  },
-  {
-    "SubjectId": "2",
-    "Username": "user2",
-    "Password": "pwd",
-    "Claims": [
-      {
-        "Type": "name",
-        "Value": "Christopher Davila"
-      },
-      {
-        "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-        "Value": "christopher.davila@gmail.com"
-      },
-      {
-        "Type": "email",
-        "Value": "christopher.davila@gmail.com"
-      },
-      {
-        "Type": "some-api-resource-claim",
-        "Value": "Sam's Api Resource Custom Claim"
-      },
-      {
-        "Type": "some-api-scope-claim",
-        "Value": "Sam's Api Scope Custom Claim"
-      },
-      {
-        "Type": "some-identity-resource-claim",
-        "Value": "Sam's Identity Resource Custom Claim"
-      },
-      {
-        "Type": "ui_color",
-        "Value": "bg-success"
-      },
-      {
-        "Type": "ui_btn_color",
-        "Value": "bg-primary"
-      }
-    ]
-  }
+    {
+        "SubjectId": "1",
+        "Username": "user1",
+        "Password": "pwd",
+        "Claims": [
+            {
+                "Type": "name",
+                "Value": "Fraser Mcconnell"
+            },
+            {
+                "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+                "Value": "fraser.mcconnell@gmail.com"
+            },
+            {
+                "Type": "email",
+                "Value": "fraser.mcconnell@gmail.com"
+            },
+            {
+                "Type": "email_verified",
+                "Value": "true"
+            },
+            /*{
+                "Type": "resource_access",
+                "Value": "{\"jornada.gago.io\":{\"roles\":[\"jornada.participar\",\"jornada.gerenciar.editar\",\"jornada.gerenciar\",\"jornada.gerenciar.adicionar\",\"admin\",\"jornada.gerenciar.remover\"]}}",
+                "Issuer": "https://id.gago.io/auth/realms/gago",
+                "ValueType": "JSON"
+            },*/
+            {
+                "Type": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                "Value": "admin"
+            },
+            {
+                "Type": "ui_color",
+                "Value": "bg-primary"
+            },
+            {
+                "Type": "ui_btn_color",
+                "Value": "bg-success"
+            }
+        ]
+    },
+    {
+        "SubjectId": "2",
+        "Username": "user2",
+        "Password": "pwd",
+        "Claims": [
+            {
+                "Type": "name",
+                "Value": "Christopher Davila"
+            },
+            {
+                "Type": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+                "Value": "christopher.davila@gmail.com"
+            },
+            {
+                "Type": "email",
+                "Value": "christopher.davila@gmail.com"
+            },
+            {
+                "Type": "email_verified",
+                "Value": "true"
+            },
+            {
+                "Type": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                "Value": "user"
+            },
+            {
+                "Type": "ui_color",
+                "Value": "bg-success"
+            },
+            {
+                "Type": "ui_btn_color",
+                "Value": "bg-primary"
+            }
+
+        ]
+    }
 ]

@@ -1,10 +1,13 @@
-[
-  {
-    "Name": "rolesx",
-    "UserClaims": [
-      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-      "xemail",
-      "resource_accessx"
-    ]
-  }
+[/*
+    {
+        "Name": "api_scope",
+        "DisplayName": "",
+        "Description": null,
+        "UserClaims": [
+            "roles"
+        ],
+        "Properties": {
+
+        }
+    }*/
 ]

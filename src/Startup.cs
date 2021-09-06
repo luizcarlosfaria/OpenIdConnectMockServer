@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using OpenIdConnectServer.Helpers;
-using OpenIdConnectServer.Services;
-using OpenIdConnectServer.Validation;
-using OpenIdConnectServer.JsonConverters;
+using OpenIdConnectMockServer.Helpers;
+using OpenIdConnectMockServer.Services;
+using OpenIdConnectMockServer.Validation;
+using OpenIdConnectMockServer.JsonConverters;
 using Newtonsoft.Json.Serialization;
-using OpenIdConnectServer.Middlewares;
+using OpenIdConnectMockServer.Middlewares;
 using IdentityServer4.Hosting;
 using System.IO;
 using System;
 using Microsoft.Extensions.Configuration;
 
-namespace OpenIdConnectServer
+namespace OpenIdConnectMockServer
 {
     public class Startup
     {

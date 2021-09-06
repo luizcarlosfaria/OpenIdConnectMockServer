@@ -7,7 +7,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Test;
 using Microsoft.Extensions.Logging;
 
-namespace OpenIdConnectServer.Services
+namespace OpenIdConnectMockServer.Services
 {
   internal class ProfileService : IProfileService
   {

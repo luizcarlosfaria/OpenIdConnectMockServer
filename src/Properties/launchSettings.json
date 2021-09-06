@@ -10,7 +10,10 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNET_ENVIRONMENT": "Development"
+      }
     },
     "OpenIdConnectServerMock": {
       "commandName": "Project",
@@ -25,6 +28,9 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNET_ENVIRONMENT": "Development"
+      },
       "publishAllPorts": true,
       "useSSL": true
     }

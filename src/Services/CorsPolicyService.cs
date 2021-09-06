@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IdentityServer4.Services;
 
-namespace OpenIdConnectServer.Services
+namespace OpenIdConnectMockServer.Services
 {
     public class CorsPolicyService : ICorsPolicyService
     {
