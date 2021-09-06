@@ -5,9 +5,18 @@ VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenIdConnectServerMock", "src\OpenIdConnectServerMock.csproj", "{D2D3954E-1269-4589-BE97-18C111032105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCWebApplicationExample", "example\MVCWebApplicationExample\MVCWebApplicationExample.csproj", "{9D820C48-8682-47D1-9A4F-9AF2FB25B2A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCWebApplicationExample", "example\MVCWebApplicationExample\MVCWebApplicationExample.csproj", "{9D820C48-8682-47D1-9A4F-9AF2FB25B2A8}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7E7AAA6A-DE36-4B4E-A849-3FC654A30C0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{9CA9C8B3-66CF-48AD-B6AA-E6429F55D09E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Server", "1-Server", "{0285B2CD-BFD6-40A8-A873-E35BD5B28D4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2-Client", "2-Client", "{90A1FD95-6D1F-4CB5-867A-BDA6630AE3A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +39,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D2D3954E-1269-4589-BE97-18C111032105} = {0285B2CD-BFD6-40A8-A873-E35BD5B28D4C}
+		{9D820C48-8682-47D1-9A4F-9AF2FB25B2A8} = {90A1FD95-6D1F-4CB5-867A-BDA6630AE3A7}
+		{7E7AAA6A-DE36-4B4E-A849-3FC654A30C0F} = {9CA9C8B3-66CF-48AD-B6AA-E6429F55D09E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E36B7EE1-717F-4D2D-947E-681EF595CA84}
