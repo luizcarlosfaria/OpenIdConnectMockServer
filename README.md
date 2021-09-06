@@ -1,4 +1,4 @@
-# OpenId Connect Server Mock
+# OpenIdConnect Mock Server
 
 ![Run Tests badge](https://github.com/Soluto/oidc-server-mock/workflows/Run%20Tests/badge.svg)
 
