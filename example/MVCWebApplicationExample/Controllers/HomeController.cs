@@ -22,10 +22,30 @@ namespace MVCWebApplicationExample.Controllers
             this._logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync([FromServices]IConfiguration configuration)
         {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                //var x = await this.HttpContext.AuthenticateAsync();
+
+                //var accessToken = await this.HttpContext.GetTokenAsync("access_token");
+                //var client = new System.Net.Http.HttpClient();
+                //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                //this.ViewData["ApiClaims"] = //Newtonsoft.Json.JsonConvert.SerializeObject( 
+                //                             //Newtonsoft.Json.JsonConvert.DeserializeObject( 
+                //                                    await client.GetStringAsync($"{this.Request.Scheme}://{this.Request.Host.Value}/Home/Identity");//, 
+                //                                    //new Newtonsoft.Json.JsonSerializerSettings() { Formatting = Newtonsoft.Json.Formatting.Indented }
+                //                                //)
+                //                            //);
+            }
+
+
             return this.View();
         }
+
+        [Authorize("ApiScope")]
+        public IActionResult Identity() => new JsonResult(from c in this.User.Claims select new { c.Type, c.Value, c.Properties });
+
 
         [Authorize("profile")]
         public IActionResult RoleProfile()
