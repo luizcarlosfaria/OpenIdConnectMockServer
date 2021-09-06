@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Authentication
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -9,13 +10,17 @@
 	@if (User.Identity.IsAuthenticated) {
 		<pre style="text-align:left">
 			@foreach(var claim in User.Claims){
-				<span>ValueType: @claim.ValueType</span>
-				<span>Type: @claim.Type</span>
+				<span style="font-size:1.3em">Type: @claim.Type</span>
+				<span style="color:#c0c0c0">ValueType: @claim.ValueType</span>
 				<span>Value: @claim.Value</span>
-				<span>-----------------------</span>
+				<br>
 			}
 		</pre>
 
+		<dt>access token</dt>
+		<dd><pre> @await ViewContext.HttpContext.GetTokenAsync("access_token")</pre></dd>
 
+		<dt>refresh token</dt>
+		<dd><pre>@await ViewContext.HttpContext.GetTokenAsync("refresh_token")</pre></dd>
 	}
 </div>
