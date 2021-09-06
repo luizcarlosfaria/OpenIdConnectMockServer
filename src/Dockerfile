@@ -4,12 +4,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
-ENV ASPNETCORE_ENVIRONMENT=Development
-ENV ACCOUNT_OPTIONS_PATH=./config/_account-options.json
-ENV SERVER_OPTIONS_PATH=./config/_server-options.json
-ENV USERS_CONFIGURATION_PATH=./config/users.json
-ENV API_RESOURCES_PATH=./config/resources.json
-ENV CLIENTS_CONFIGURATION_PATH=./config/clients.json
 COPY ./src/config /OpenIdConnectServerMock/config
 COPY ./src/keys /OpenIdConnectServerMock/keys
 
