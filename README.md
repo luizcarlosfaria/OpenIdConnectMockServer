@@ -1,11 +1,11 @@
 
 # OpenIdConnect Mock Server
 
-![Run Tests badge](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/workflows/Run%20Tests/badge.svg)
+[![Build and push new image version](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/actions/workflows/tag.yaml/badge.svg)](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/actions/workflows/tag.yaml)
 
 Esse projeto tem a função de te ajudar a construir demonstrações, provas de conceito, lives em qualquer tipo de cenário em que ter diversos usuários seja útil para demonstrar perfis diferentes.
 
-A ideia é permitir que você tenha todos os dados para login em arquivos de configuração ou variáveis de ambiente, e ao invés de precisar digitar usuário e senha você simplesmente seleciona com qual usuário você quer logar para demonstrar aalgo.
+A ideia é permitir que você tenha todos os dados para login em arquivos de configuração ou variáveis de ambiente, e ao invés de precisar digitar usuário e senha você simplesmente seleciona com qual usuário você quer logar para demonstrar algo.
 
 Esse é um exemplo de `docker-compose.override.yaml`, nesse caso usando os dados default.
 
@@ -52,18 +52,13 @@ networks:
       
 ```
 
-As configurações estão dispostas em pares, [configuration_name]_INLINE e [configuration_name]_PATH. 
+As configurações estão dispostas em pares, [configuration_name]_INLINE e [configuration_name]_PATH. Primeiro vou tentar obter a versão INLINE da configuração, caso não esteja configurado, usarei a versão PATH, obtendo o arquivo e carregando para a memória. 
 
- [configuration_name]_INLINE tem maior prioridade e é usado para você descrever inline todo o JSON de configuração.
- 
- [configuration_name]_PATH é a segunda estratégia que usa arquivos de configuração. Você deve especificar um path.
+O conteúdo INLINE é um JSON enquanto o conteúdo PATH é um path de um arquivo JSON.
 
+Essas configurações seguem o padrão do ASP .NET, com EnvironmentVariables, appsettings.json etc...
 
-Major configurations are organized in [configuration_name]_INLINE and  [configuration_name]_PATH, using all default configuration strategy of ASP .NET. EnvironmentVariables, appsettings.json etc.
-
-The configuration mechanism will try use _INLINE version of configuration and if it empty, will use _PATH version. If _PATH version is empty, some configs will be filled with default value.
-
-There are two ways to provide configuration for supported scopes, clients and users. You can either provide it inline as environment variable:
+## Configurações
 
 * `ASPNET_SERVICES_OPTIONS_INLINE`
 * `ASPNET_SERVICES_OPTIONS_PATH`
@@ -89,38 +84,33 @@ There are two ways to provide configuration for supported scopes, clients and us
 
 1. Clone o repositório:
 
-      ```sh
-      git clone https://github.com/luizcarlosfaria/OpenIdConnectMockServer.git
-      ```
+```sh
+git clone https://github.com/luizcarlosfaria/OpenIdConnectMockServer.git
+```
 
-2. Instale os pacotes `npm` (run from `/e2e` folder):
+[Configurações de Exemplo](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/tree/master/src/config)
 
-    ```sh
-    npm install
-    ```
 
-3. Execute os testes:
+# O motivo do FORK
 
-    ```sh
-    npm run test
-    ```
+## 1 - Login Facilitado
+Com base em uma lista de usuários previamente cadastrados, eu queria poder entregar uma UI em que ao invés de digitar um usuário e senha o usuário simplesmente escolhesse entre algum da lista.
+No passado já perdi muito tempo tentando lembrar usuário e senha e fora de um contexto produtivo (produção), credenciais são irrelevantes nesse contexto.
 
-# About this fork
+## 2 - O foco não é segurança
+Uma coisa importante é que o foco não é a segurança em si. 
+O foco aqui são os projetos que precisam de perfis diferentes e para isso precisam de um serviço de autenticação.
 
-This fork configure default parameters. Is awesome to get started with minimal footprint.
+## 3 - Evitando gambiarras 
+Isolar um IDP dá a possibilidade de desenhar soluções compatíveis com Keycloak e o próprio Identity Server.
 
-On this image, config path is ```/OpenIdConnectServerMock/config/```
+# Onde será usado?
+## 1 - Cursos
+### 1.1 - RabbitMQ
+No curso de RabbitMQ para aplicações .NET temos a demanda de trabalhar Event Driven Architecture, e nosso case é uma Exchange, eu preciso lidar com diversos perfis para isso.
+### 1.2 - Docker Definitivo / O Roadmap
+Já o que diz respeito ao Docker Definitivo / O Roadmap temos demandas das mais variadas sobre microsserviço e poder contar com esse desenho ajuda.
+Outro assunto é SAAS Maturity Model, um tema que gostaria de apresentar para eles mostrando como implementar o level 4, desmistificando a ideia de incompatibilidade entre os níveis 3 e 4.
+## 2 Material para a comunidade
+Tem muitos casos interessantes a demonstrar. Até então era trabalhoso demais criar demonstrações que dependessem de um Identity Provider, agora fica mais simples, mais fácil.
 
-## Volume for Keys
-RSA keys is generated inside ```/OpenIdConnectServerMock/keys/```
-
-## UI Customization
-
-### Autologin
-On login page, all users are listed and you can login clicking in the respective card without use Username and Password. 
-
-This approach reduce timing finding credentials , it's a huge help on live stream sessions and demonstrations.
-
-### Disable validation on /diagnostics
-
-By default access to /diagnostics is only accepted if you are on 127.0.0.1, anybody else is blocked to access this route, including us when using docker.
