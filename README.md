@@ -1,275 +1,113 @@
+
 # OpenIdConnect Mock Server
 
-![Run Tests badge](https://github.com/Soluto/oidc-server-mock/workflows/Run%20Tests/badge.svg)
+![Run Tests badge](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/workflows/Run%20Tests/badge.svg)
 
-This project allows you to run configurable mock server with OpenId Connect functionality.
+Esse projeto tem a função de te ajudar a construir demonstrações, provas de conceito, lives em qualquer tipo de cenário em que ter diversos usuários seja útil para demonstrar perfis diferentes.
 
-This is the sample of using the server in `docker-compose` configuration:
+A ideia é permitir que você tenha todos os dados para login em arquivos de configuração ou variáveis de ambiente, e ao invés de precisar digitar usuário e senha você simplesmente seleciona com qual usuário você quer logar para demonstrar aalgo.
+
+Esse é um exemplo de `docker-compose.override.yaml`, nesse caso usando os dados default.
 
 ```yaml
-  version: '3'
-  services:
-    oidc-server-mock:
-      container_name: oidc-server-mock
-      image: soluto/oidc-server-mock
-      ports:
-        - "4011:80"
-      environment:
-        ASPNETCORE_ENVIRONMENT: Development
-        SERVER_OPTIONS_INLINE: |
-          {
-            "AccessTokenJwtType": "JWT",
-            "Discovery": {
-              "ShowKeySet": true
-            },
-            "Authentication": {
-              "CookieSameSiteMode": "Lax",
-              "CheckSessionCookieSameSiteMode": "Lax"
-            }
-          }
-        ACCOUNT_OPTIONS_INLINE: |
-          {
-            "AutomaticRedirectAfterSignOut": true
-          }
-        API_SCOPES_INLINE: |
-          [
-            {
-              "Name": "some-app-scope-1"
-            },
-            {
-              "Name": "some-app-scope-2"
-            }
-          ]
-        API_RESOURCES_INLINE: |
-          [
-            {
-              "Name": "some-app",
-              "Scopes": ["some-app-scope-1", "some-app-scope-2"]
-            }
-          ]
-        USERS_CONFIGURATION_INLINE: |
-          [
-            {
-              "SubjectId":"1",
-              "Username":"User1",
-              "Password":"pwd",
-              "Claims": [
-                {
-                  "Type": "name",
-                  "Value": "Sam Tailor"
-                },
-                {
-                  "Type": "email",
-                  "Value": "sam.tailor@gmail.com"
-                },
-                {
-                  "Type": "some-api-resource-claim",
-                  "Value": "Sam's Api Resource Custom Claim"
-                },
-                {
-                  "Type": "some-api-scope-claim",
-                  "Value": "Sam's Api Scope Custom Claim"
-                },
-                {
-                  "Type": "some-identity-resource-claim",
-                  "Value": "Sam's Identity Resource Custom Claim"
-                }
-              ]
-            }
-          ]
-        CLIENTS_CONFIGURATION_PATH: /tmp/config/clients-config.json
-      volumes:
-        - .:/tmp/config:ro
+version: '3.4'
+
+services:
+  identity_mock:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:12080;https://+:12443
+    ports:
+      - "12080:12080"
+      - "12443:12443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+     app:
+        aliases:
+          - localhost10.gago.io
+
+  example:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:13080;https://+:13443
+      - bearer__Authority=https://localhost10.gago.io:12443
+      - oidc__Authority=https://localhost10.gago.io:12443
+    ports:
+      - "13080:13080"
+      - "13443:13443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+     app:
+        aliases:
+          - localhost1.gago.io
+
+
+networks:
+  app:
+    driver: bridge  
+      
 ```
 
-When `clients-config.json` is as following:
+As configurações estão dispostas em pares, [configuration_name]_INLINE e [configuration_name]_PATH. 
 
-```json
-[{
-        "ClientId": "implicit-mock-client",
-        "Description": "Client for implicit flow",
-        "AllowedGrantTypes": [
-            "implicit"
-        ],
-        "AllowAccessTokensViaBrowser": true,
-        "RedirectUris": [
-            "http://localhost:3000/auth/oidc",
-            "http://localhost:4004/auth/oidc"
-        ],
-        "AllowedScopes": [
-            "openid",
-            "profile",
-            "email"
-        ],
-        "IdentityTokenLifetime": 3600,
-        "AccessTokenLifetime": 3600
-    },
-    {
-        "ClientId": "client-credentials-mock-client",
-        "ClientSecrets": [
-          "client-credentials-mock-client-secret"
-        ],
-        "Description": "Client for client credentials flow",
-        "AllowedGrantTypes": [
-            "client_credentials"
-        ],
-        "AllowedScopes": [
-            "some-app"
-        ],
-        "ClientClaimsPrefix": "",
-        "Claims": [
-            {
-                "Type": "string_claim",
-                "Value": "string_claim_value"
-            },
-            {
-                "Type": "json_claim",
-                "Value": "['value1', 'value2']",
-                "ValueType": "json"
-            }
-        ]
+ [configuration_name]_INLINE tem maior prioridade e é usado para você descrever inline todo o JSON de configuração.
+ 
+ [configuration_name]_PATH é a segunda estratégia que usa arquivos de configuração. Você deve especificar um path.
 
-    }
-]
-```
 
-Clients configuration should be provided. Test user configuration is optional (used for implicit flow only).
+Major configurations are organized in [configuration_name]_INLINE and  [configuration_name]_PATH, using all default configuration strategy of ASP .NET. EnvironmentVariables, appsettings.json etc.
+
+The configuration mechanism will try use _INLINE version of configuration and if it empty, will use _PATH version. If _PATH version is empty, some configs will be filled with default value.
 
 There are two ways to provide configuration for supported scopes, clients and users. You can either provide it inline as environment variable:
 
-* `SERVER_OPTIONS_INLINE`
-* `ACCOUNT_OPTIONS_INLINE`
+* `ASPNET_SERVICES_OPTIONS_INLINE`
+* `ASPNET_SERVICES_OPTIONS_PATH`
+* `SERVER_OPTIONS_INLINE` 
+* `SERVER_OPTIONS_PATH` **Default**: `./config/_server-options.json`
+* `ACCOUNT_OPTIONS__INLINE`
+* `ACCOUNT_OPTIONS__PATH` **Default**: `./config/_account-options.json`
+* `SERVER_CORS_ALLOWED_ORIGINS_INLINE` 
+* `SERVER_CORS_ALLOWED_ORIGINS_PATH`
 * `API_SCOPES_INLINE`
-* `USERS_CONFIGURATION_INLINE`
-* `CLIENTS_CONFIGURATION_INLINE`
+* `API_SCOPES_PATH` **Default**: `./config/api.scopes.json`
 * `API_RESOURCES_INLINE`
+* `API_RESOURCES_PATH` **Default**: `./config/api.resources.json`
+* `CLIENTS_CONFIGURATION_INLINE`
+* `CLIENTS_CONFIGURATION_PATH` **Default**: `./config/clients.json`
+* `USERS_CONFIGURATION_INLINE`
+* `USERS_CONFIGURATION_PATH` **Default**: `./config/users.json`
 * `IDENTITY_RESOURCES_INLINE`
-
-   or mount volume and provide the path to configuration json as environment variable:
-
-* `SERVER_OPTIONS_PATH`
-* `ACCOUNT_OPTIONS_PATH`
-* `API_SCOPES_PATH`
-* `USERS_CONFIGURATION_PATH`
-* `CLIENTS_CONFIGURATION_PATH`
-* `API_RESOURCES_PATH`
 * `IDENTITY_RESOURCES_PATH`
 
 
-## Base path
-
-The server can be configured to run with base path. So all the server endpoints will be also available with some prefix segment.
-For example `http://localhost:8080/my-base-path/.well-known/openid-configuration` and `http://localhost:8080/my-base-path/connect/token`.
-Just set `BasePath` property in `ASPNET_SERVICES_OPTIONS_INLINE/PATH` env var.
-
-## Custom endpoints
-
-### User management
-
-Users can be added (in future also removed and altered) via `user management` endpoint.
-
-* Create new user: `POST` request to `/api/v1/user` path.
-  The request body should be the `User` object. Just as in `USERS_CONFIGURATION`.
-  The response is subjectId as sent in request.
-
-* Get user: `GET` request to  `/api/v1/user/{subjectId}` path.
-  The response is `User` object
-
-* Update user `PUT` request to `/api/v1/user` path. (**Not implemented yet**)
-  The request body should be the `User` object. Just as in `USERS_CONFIGURATION`.
-  The response is subjectId as sent in request.
-  > If user doesn't exits it will be created.
-
-* Delete user: `DELETE` request to  `/api/v1/user/{subjectId}` path.  (**Not implemented yet**)
-  The response is `User` object
-
-## HTTPS
-
-To use `https` protocol with the server just add the following environment variables to the `docker run`/`docker-compose up` command, expose ports and mount volume containing the pfx file:
-
-```yaml
-environment:
-  ASPNETCORE_URLS: https://+:443;http://+:80
-  ASPNETCORE_Kestrel__Certificates__Default__Password: <password for pfx file>
-  ASPNETCORE_Kestrel__Certificates__Default__Path: /path/to/pfx/file
-volumes:
-  - ./local/path/to/pfx/file:/path/to/pfx/file:ro
-ports:
-  - 8080:80
-  - 8443:443
-```
-
----
-
-## Cookie SameSite mode
-
-Since Aug 2020 Chrome has a new [secure-by-default model](https://blog.chromium.org/2019/10/developers-get-ready-for-new.html) for cookies, enabled by a new cookie classification system. Other browsers will join in near future.
-
-There are two ways to use `oidc-server-mock` with this change.
-
-1. Run the container with HTTPS enabled (see above).
-2. Change cookies `SameSite` mode from default `None` to `Lax`. To do so just add the following to `SERVER_OPTIONS_INLINE` (or the file at `SERVER_OPTIONS_PATH`):
-
-```javascript
-{
-  // Existing configuration
-  // ...
-  "Authentication": {
-    "CookieSameSiteMode": "Lax",
-    "CheckSessionCookieSameSiteMode": "Lax"
-  }
-}
-```
-
-## Contributing
-
-### Requirements
-
-1. [Docker](https://www.docker.com/) (version 18.09 or higher)
-
-2. [NodeJS](https://nodejs.org/en/) (version 10.0.0 or higher)
-
 ### Getting started
 
-1. Clone the repo:
+1. Clone o repositório:
 
       ```sh
-      git clone git@github.com:Soluto/oidc-server-mock.git
+      git clone https://github.com/luizcarlosfaria/OpenIdConnectMockServer.git
       ```
 
-2. Install `npm` packages (run from `/e2e` folder):
+2. Instale os pacotes `npm` (run from `/e2e` folder):
 
     ```sh
     npm install
     ```
 
-    > Note: During the build of Docker image UI source code is fetched from [github](https://github.com/IdentityServer/IdentityServer4.Quickstart.UI/tree/main). If you experience some issues on project compile step of Docker build or on runtime try to change the branch or commit in the [script](./src/getmain.sh).
-
-3. Run tests:
+3. Execute os testes:
 
     ```sh
     npm run test
     ```
 
-## Used by
-
-1. [Tweek](https://github.com/Soluto/tweek) blackbox [tests](https://github.com/Soluto/tweek-blackbox).
-
-2. [Stitch](https://github.com/Soluto/Stitch) e2e tests.
-
 # About this fork
 
 This fork configure default parameters. Is awesome to get started with minimal footprint.
-
-## Default configuration
-
-```dockerfile
-ENV ACCOUNT_OPTIONS_PATH        =./config/_account-options.json
-ENV SERVER_OPTIONS_PATH         =./config/_server-options.json
-ENV USERS_CONFIGURATION_PATH    =./config/users.json
-ENV API_RESOURCES_PATH          =./config/resources.json
-ENV CLIENTS_CONFIGURATION_PATH  =./config/clients.json
-```
 
 On this image, config path is ```/OpenIdConnectServerMock/config/```
 
