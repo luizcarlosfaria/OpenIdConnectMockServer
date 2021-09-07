@@ -6,22 +6,10 @@ services:
     build:
       context: .
       dockerfile: src/Dockerfile
-    networks:
-     app:
-        aliases:
-          - localhost10.gago.io
+
 
   example:
     image: ${DOCKER_REGISTRY-}mvcwebapplicationexample
     build:
       context: .
       dockerfile: example/MVCWebApplicationExample/Dockerfile
-    networks:
-     app:
-        aliases:
-          - localhost1.gago.io
-
-
-networks:
-  app:
-    driver: bridge
