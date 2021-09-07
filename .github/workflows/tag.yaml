@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./src
+          context: ./
           file: ./src/Dockerfile
           tags: |
            luizcarlosfaria/oidc-mock-server:latest
