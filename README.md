@@ -86,7 +86,13 @@ Essas configurações seguem o padrão do ASP .NET, com EnvironmentVariables, ap
 
 ```sh
 git clone https://github.com/luizcarlosfaria/OpenIdConnectMockServer.git
+
+cd OpenIdConnectMockServer
+
+docker-compose up --build
 ```
+
+Abra [https://localhost1.gago.io:13443/](https://localhost1.gago.io:13443/) no navegador
 
 [Configurações de Exemplo](https://github.com/luizcarlosfaria/OpenIdConnectMockServer/tree/master/src/config)
 
