@@ -79,8 +79,8 @@ namespace OpenIdConnectMockServer
             var standardResources = new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile().AddUserClaim("email_verified"),
-                new IdentityResources.Email(),
+                new IdentityResources.Profile().AddUserClaim("name"),
+                new IdentityResources.Email().AddUserClaim("email_verified"),
                 new IdentityResource(
                     name: "roles",
                     userClaims: new[] { "resource_access", "role", System.Security.Claims.ClaimTypes.Role },
